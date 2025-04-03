@@ -1,4 +1,4 @@
-package com.RPBank.main.utils.utilityClasses;
+package com.RPBank.main.DTO;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;

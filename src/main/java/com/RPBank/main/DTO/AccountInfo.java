@@ -1,4 +1,4 @@
-package com.RPBank.main.utils.utilityClasses;
+package com.RPBank.main.DTO;
 
 import com.RPBank.main.utils.enums.AccountType;
 import jakarta.persistence.Column;

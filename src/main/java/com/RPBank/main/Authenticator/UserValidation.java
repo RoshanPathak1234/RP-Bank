@@ -1,4 +1,4 @@
-package com.RPBank.main.utils.Authenticator;
+package com.RPBank.main.Authenticator;
 
 import com.RPBank.main.DAO.UserDAO;
 import com.RPBank.main.DTO.BankResponse;

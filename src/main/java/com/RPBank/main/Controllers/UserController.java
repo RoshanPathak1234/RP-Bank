@@ -2,7 +2,8 @@ package com.RPBank.main.Controllers;
 
 import com.RPBank.main.DTO.BankResponse;
 import com.RPBank.main.DTO.EnquiryRequest;
-import com.RPBank.main.DTO.TransactionRequest;
+import com.RPBank.main.DTO.TransactionRequests.TransferRequest;
+import com.RPBank.main.DTO.TransactionRequests.creditDebitRequest;
 import com.RPBank.main.DTO.UserInfo;
 import com.RPBank.main.Services.EnquiryService;
 import com.RPBank.main.Services.NewAccountService;
@@ -25,23 +26,29 @@ public class UserController {
     @Autowired
     TransactionService transactionService;
 
-    @PostMapping("/createNewAccount")
-    public ResponseEntity<BankResponse> createNewAccount(@RequestBody UserInfo userInfo , @RequestParam AccountType type){
-        return newAccountService.createAccount(userInfo , type);
-    }
 
     @GetMapping("/enquiry/accountDetails")
     public  ResponseEntity<BankResponse> enquiryAccountDetails(@RequestBody EnquiryRequest request) {
         return enquiryService.accountDetailsEnquiry(request);
     }
 
+    @PostMapping("/createNewAccount")
+    public ResponseEntity<BankResponse> createNewAccount(@RequestBody UserInfo userInfo , @RequestParam AccountType type){
+        return newAccountService.createAccount(userInfo , type);
+    }
+
     @PostMapping("/credit")
-    public ResponseEntity<BankResponse> creditAmount(@RequestBody TransactionRequest request) {
+    public ResponseEntity<BankResponse> creditAmount(@RequestBody creditDebitRequest request) {
         return transactionService.creditAmount(request);
     }
 
     @PostMapping("/debit")
-    public ResponseEntity<BankResponse> debitAmount(@RequestBody TransactionRequest request) {
+    public ResponseEntity<BankResponse> debitAmount(@RequestBody creditDebitRequest request) {
         return transactionService.debitAmount(request);
+    }
+
+    @PostMapping("/transfer")
+    public ResponseEntity<BankResponse> transfer(@RequestBody TransferRequest request) {
+        return transactionService.transfer(request);
     }
 }

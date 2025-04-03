@@ -1,4 +1,4 @@
-package com.RPBank.main.DTO;
+package com.RPBank.main.DTO.TransactionRequests;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class TransactionRequest {
+public class creditDebitRequest {
 
     private String accountNumber;
 

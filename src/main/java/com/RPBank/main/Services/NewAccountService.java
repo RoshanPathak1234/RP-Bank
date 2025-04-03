@@ -1,12 +1,12 @@
 package com.RPBank.main.Services;
 
-import com.RPBank.main.utils.Authenticator.UserValidation;
+import com.RPBank.main.Authenticator.UserValidation;
 import com.RPBank.main.Beans.User;
 import com.RPBank.main.DAO.UserDAO;
 import com.RPBank.main.DTO.*;
 import com.RPBank.main.Services.interfaces.AccountServicesImpl;
 import com.RPBank.main.utils.enums.AccountType;
-import com.RPBank.main.utils.utilityClasses.AccountInfo;
+import com.RPBank.main.DTO.AccountInfo;
 import com.RPBank.main.utils.enums.AccountStatus;
 import com.RPBank.main.utils.utilityClasses.AccountUtils;
 import org.springframework.beans.factory.annotation.Autowired;

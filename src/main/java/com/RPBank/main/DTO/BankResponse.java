@@ -1,6 +1,5 @@
 package com.RPBank.main.DTO;
 
-import com.RPBank.main.utils.utilityClasses.AccountInfo;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
