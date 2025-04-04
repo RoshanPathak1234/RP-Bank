@@ -5,13 +5,10 @@ import com.RPBank.main.DAO.UserDAO;
 import com.RPBank.main.DTO.BankResponse;
 import com.RPBank.main.DTO.EnquiryRequest;
 import com.RPBank.main.Services.interfaces.EnquiryServicesImpl;
-import com.RPBank.main.utils.utilityClasses.AccountUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 import static com.RPBank.main.utils.utilityClasses.AccountUtils.buildResponseError;
 
@@ -26,14 +23,14 @@ public class EnquiryService implements EnquiryServicesImpl {
     @Override
     public ResponseEntity<BankResponse> accountDetailsEnquiry(EnquiryRequest request) {
 
-        if(userDAO.existsByAccountInfo_AccountNumber(request.getAccountNumber())) {
+        if(userDAO.existsByAccountDTO_AccountNumber(request.getAccountNumber())) {
 
-            User user = userDAO.findByAccountInfo_AccountNumber(request.getAccountNumber());
+            User user = userDAO.findByAccountDTO_AccountNumber(request.getAccountNumber());
 
             BankResponse response = BankResponse.builder()
                     .responseStatus(HttpStatus.OK.toString())
                     .responseMessage("Account Details fetched successfully.")
-                    .accountInfo(user.getAccountInfo())
+                    .accountDTO(user.getAccountDTO())
                     .build();
 
             return new ResponseEntity<>(response, HttpStatus.OK);

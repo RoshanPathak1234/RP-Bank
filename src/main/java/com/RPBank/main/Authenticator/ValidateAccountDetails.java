@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 public class ValidateAccountDetails {
 
     public static ResponseEntity<ValidationResponse> validateAccountNumber(UserDAO userDAO , String accountNumber){
-        if(userDAO.existsByAccountInfo_AccountNumber(accountNumber)) {
+        if(userDAO.existsByAccountDTO_AccountNumber(accountNumber)) {
             ValidationResponse response = ValidationResponse.builder()
                     .responseStatus(HttpStatus.OK.toString())
                     .responseMessage("Account number validated successfully.")
@@ -44,8 +44,8 @@ public class ValidateAccountDetails {
             return AccountUtils.buildValidationResponseError((HttpStatus) response.getStatusCode(), response.getBody().getResponseMessage());
         }
 
-        User user = userDAO.findByAccountInfo_AccountNumber(accountNumber);
-        String name = user.getAccountInfo().getAccountName();
+        User user = userDAO.findByAccountDTO_AccountNumber(accountNumber);
+        String name = user.getAccountDTO().getAccountName();
 
         if(!accountName.equals(name)) {
             return AccountUtils.buildValidationResponseError(HttpStatus.BAD_REQUEST , "Account credentials not matched!");
@@ -68,7 +68,7 @@ public class ValidateAccountDetails {
         }
 
         User user = userDAO.findById(CustomerId).get();
-        String name = user.getAccountInfo().getAccountName();
+        String name = user.getAccountDTO().getAccountName();
 
         if(!accountName.equals(name)) {
             return AccountUtils.buildValidationResponseError(HttpStatus.BAD_REQUEST , "Account credentials not matched!");

@@ -1,19 +1,21 @@
 package com.RPBank.main.Services;
 
 import com.RPBank.main.Authenticator.ValidateAccountDetails;
+import com.RPBank.main.Beans.Transaction;
 import com.RPBank.main.Beans.User;
+import com.RPBank.main.DAO.TransactionDAO;
 import com.RPBank.main.DAO.UserDAO;
-import com.RPBank.main.DTO.BankResponse;
-import com.RPBank.main.DTO.EmailDetails;
+import com.RPBank.main.DTO.*;
 import com.RPBank.main.DTO.TransactionRequests.TransferRequest;
-import com.RPBank.main.DTO.TransactionRequests.creditDebitRequest;
-import com.RPBank.main.DTO.ValidationResponse;
+import com.RPBank.main.DTO.TransactionRequests.CreditDebitRequest;
 import com.RPBank.main.Services.interfaces.TransactionServicesImpl;
-import com.RPBank.main.DTO.AccountInfo;
+import com.RPBank.main.utils.enums.TransactionStatus;
+import com.RPBank.main.utils.enums.TransactionType;
 import com.RPBank.main.utils.utilityClasses.AccountUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -27,24 +29,36 @@ public class TransactionService implements TransactionServicesImpl {
     @Autowired
     EmailService emailService;
 
+    @Autowired
+    TransactionDAO transactionDAO;
+
     @Override
-    public ResponseEntity<BankResponse> creditAmount(creditDebitRequest request) {
+    public ResponseEntity<BankResponse> creditAmount(CreditDebitRequest request) {
 
         ResponseEntity<ValidationResponse> validateResult = ValidateAccountDetails.validateAccountNumber(userDAO , request.getAccountNumber());
 
         if(validateResult.getStatusCode().equals(HttpStatus.OK)) {
-            User user = userDAO.findByAccountInfo_AccountNumber(request.getAccountNumber());
-            AccountInfo accountInfo = user.getAccountInfo();
-            accountInfo.setAccountBalance(accountInfo.getAccountBalance().add(request.getAmount()));
-            user.setAccountInfo(accountInfo);
+            User user = userDAO.findByAccountDTO_AccountNumber(request.getAccountNumber());
+            AccountDTO accountDTO = user.getAccountDTO();
+            accountDTO.setAccountBalance(accountDTO.getAccountBalance().add(request.getAmount()));
+            user.setAccountDTO(accountDTO);
 
             userDAO.save(user);
+            sendCreditAmountMailAlert(user , request.getAmount());
 
             BankResponse response = BankResponse.builder()
                     .responseStatus(HttpStatus.OK.toString())
                     .responseMessage("Amount credited successfully.")
-                    .accountInfo(accountInfo)
+                    .accountDTO(accountDTO)
                     .build();
+
+            TransactionDTO transactionDTO = TransactionDTO.builder()
+                    .amount(request.getAmount())
+                    .transactionType(TransactionType.CREDIT)
+                    .accountNumber(request.getAccountNumber())
+                    .build();
+
+            saveTransaction(transactionDTO);
 
             return new ResponseEntity<>(response , HttpStatus.OK);
         }
@@ -53,26 +67,35 @@ public class TransactionService implements TransactionServicesImpl {
     }
 
     @Override
-    public ResponseEntity<BankResponse> debitAmount(creditDebitRequest request) {
+    public ResponseEntity<BankResponse> debitAmount(CreditDebitRequest request) {
         ResponseEntity<ValidationResponse> validateResult = ValidateAccountDetails.validateAccountNumber(userDAO , request.getAccountNumber());
 
         if(validateResult.getStatusCode().equals(HttpStatus.OK)) {
-            User user = userDAO.findByAccountInfo_AccountNumber(request.getAccountNumber());
-            AccountInfo accountInfo = user.getAccountInfo();
-            if(accountInfo.getAccountBalance().subtract(request.getAmount()).compareTo(BigDecimal.valueOf(1000)) <= 0){
+            User user = userDAO.findByAccountDTO_AccountNumber(request.getAccountNumber());
+            AccountDTO accountDTO = user.getAccountDTO();
+            if(accountDTO.getAccountBalance().subtract(request.getAmount()).compareTo(BigDecimal.valueOf(1000)) <= 0){
                 return AccountUtils.buildResponseError(HttpStatus.BAD_REQUEST , "Transaction failed! you don't have this much balance in your account.");
             }
 
-            accountInfo.setAccountBalance(accountInfo.getAccountBalance().subtract(request.getAmount()));
-            user.setAccountInfo(accountInfo);
+            accountDTO.setAccountBalance(accountDTO.getAccountBalance().subtract(request.getAmount()));
+            user.setAccountDTO(accountDTO);
 
             userDAO.save(user);
+            sendDebitAmountMailAlert(user , request.getAmount());
 
             BankResponse response = BankResponse.builder()
                     .responseStatus(HttpStatus.OK.toString())
-                    .responseMessage("Amount credited successfully.")
-                    .accountInfo(accountInfo)
+                    .responseMessage("Amount debited successfully.")
+                    .accountDTO(accountDTO)
                     .build();
+
+            TransactionDTO transactionDTO = TransactionDTO.builder()
+                    .amount(request.getAmount())
+                    .transactionType(TransactionType.DEBIT)
+                    .accountNumber(request.getAccountNumber())
+                    .build();
+
+            saveTransaction(transactionDTO);
 
             return new ResponseEntity<>(response , HttpStatus.OK);
         }
@@ -94,19 +117,25 @@ public class TransactionService implements TransactionServicesImpl {
             return AccountUtils.buildResponseError(HttpStatus.BAD_REQUEST , validateDestinationAccount.getBody().getResponseMessage());
         }
 
-        User sourceUser = userDAO.findByAccountInfo_AccountNumber(request.getSourceAccountNumber());
-        User destinationUser = userDAO.findByAccountInfo_AccountNumber(request.getDestinationAccountNumber());
+        User sourceUser = userDAO.findByAccountDTO_AccountNumber(request.getSourceAccountNumber());
+        User destinationUser = userDAO.findByAccountDTO_AccountNumber(request.getDestinationAccountNumber());
 
-        if(sourceUser.getAccountInfo().getAccountBalance().subtract(request.getAmount()).compareTo(BigDecimal.valueOf(1000)) < 1) {
+        if(sourceUser.getAccountDTO().getAccountBalance().subtract(request.getAmount()).compareTo(BigDecimal.valueOf(1000)) < 1) {
             return AccountUtils.buildResponseError(HttpStatus.BAD_REQUEST , "You do not have enough account balance! \n you must maintain minimum account balance of Rs. 1000");
         }
 
-        sourceUser.setAccountInfo(AccountInfo.builder()
-                        .accountBalance(sourceUser.getAccountInfo().getAccountBalance().subtract(request.getAmount()))
+        sourceUser.setAccountDTO(AccountDTO.builder()
+                        .accountBalance(sourceUser.getAccountDTO().getAccountBalance().subtract(request.getAmount()))
+                        .accountName(sourceUser.getAccountDTO().getAccountName())
+                        .accountNumber(sourceUser.getAccountDTO().getAccountNumber())
+                        .type(sourceUser.getAccountDTO().getType())
                         .build());
 
-        destinationUser.setAccountInfo(AccountInfo.builder()
-                        .accountBalance(destinationUser.getAccountInfo().getAccountBalance().add(request.getAmount()))
+        destinationUser.setAccountDTO(AccountDTO.builder()
+                        .accountBalance(destinationUser.getAccountDTO().getAccountBalance().add(request.getAmount()))
+                        .accountName(destinationUser.getAccountDTO().getAccountName())
+                        .accountNumber(destinationUser.getAccountDTO().getAccountNumber())
+                        .type(destinationUser.getAccountDTO().getType())
                         .build());
 
         userDAO.save(sourceUser);
@@ -116,41 +145,94 @@ public class TransactionService implements TransactionServicesImpl {
         ResponseEntity<String> destinationMail =  sendCreditAmountMailAlert(destinationUser, request.getAmount());
 
         BankResponse response = BankResponse.builder()
-                .accountInfo(sourceUser.getAccountInfo())
+                .accountDTO(sourceUser.getAccountDTO())
                 .responseMessage("Amount transferred successfully.")
                 .responseStatus(HttpStatus.OK.toString())
                 .build();
 
+        TransactionDTO sourceTransactionDTO = TransactionDTO.builder()
+                .amount(request.getAmount())
+                .transactionType(TransactionType.DEBIT)
+                .accountNumber(request.getSourceAccountNumber())
+                .build();
+
+        saveTransaction(sourceTransactionDTO);
+
+        TransactionDTO destinationTransactionDTO = TransactionDTO.builder()
+                .amount(request.getAmount())
+                .transactionType(TransactionType.CREDIT)
+                .accountNumber(request.getDestinationAccountNumber())
+                .build();
+
+        saveTransaction(destinationTransactionDTO);
+
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    private ResponseEntity<String> sendCreditAmountMailAlert(User user, BigDecimal amount){
+    @Override
+    public ResponseEntity<Transaction> saveTransaction(TransactionDTO transactionDTO) {
 
-        String msg = "Dear " + user.getAccountInfo().getAccountName()
-                + ", \nA sum of " + amount + " is credited in your account having account number " + user.getAccountInfo().getAccountNumber()
-                + "Your current account balance is : " + user.getAccountInfo().getAccountBalance() + ". \n"
-                + "Best regards,\nRP Bank";
+        Transaction transaction = Transaction.builder()
+                .transactionType(transactionDTO.getTransactionType())
+                .amount(transactionDTO.getAmount())
+                .accountNumber(transactionDTO.getAccountNumber())
+                .status(TransactionStatus.SUCCESS)
+                .build();
 
-        return emailService.sendEmailAlert(EmailDetails.builder()
-                        .recipient(user.getPrimaryEmail())
-                        .subject("Amount credited to your account.")
-                        .messageBody(msg)
-                        .build());
+        Transaction savedTransaction =  transactionDAO.save(transaction);
 
+        return new ResponseEntity<>(savedTransaction , HttpStatus.OK);
     }
 
-    private ResponseEntity<String> sendDebitAmountMailAlert(User user, BigDecimal amount){
+    private ResponseEntity<String> sendCreditAmountMailAlert(User user, BigDecimal amount) {
+        String msg = String.format(
+                """
+                        Dear %s,\s
+                        \s
+                        A sum of %s has been credited to your account (Account No: %s).
+                        Your current account balance is: %s.
+                        
+                        Best regards,
+                        RP Bank""",
+                user.getAccountDTO().getAccountName(),
+                amount,
+                user.getAccountDTO().getAccountNumber(),
+                user.getAccountDTO().getAccountBalance()
+        );
 
-        String msg = "Dear " + user.getAccountInfo().getAccountName()
-                + ", \nA sum of " + amount + " is debited from your account having account number " + user.getAccountInfo().getAccountNumber()
-                + "Your current account balance is : " + user.getAccountInfo().getAccountBalance() + ". \n"
-                + "Best regards,\nRP Bank";
-
-        return emailService.sendEmailAlert(EmailDetails.builder()
+        return emailService.sendEmailAlert(
+                EmailDetails.builder()
                         .recipient(user.getPrimaryEmail())
-                        .subject("Amount debited from your account.")
+                        .subject("Amount Credited to Your Account")
                         .messageBody(msg)
-                        .build());
-
+                        .build()
+        );
     }
+
+
+    private ResponseEntity<String> sendDebitAmountMailAlert(User user, BigDecimal amount) {
+        String msg = String.format(
+                """
+                        Dear %s,\s
+                        \s
+                        A sum of %s has been debited from your account (Account No: %s).
+                        Your current account balance is: %s.
+                        
+                        Best regards,
+                        RP Bank""",
+                user.getAccountDTO().getAccountName(),
+                amount,
+                user.getAccountDTO().getAccountNumber(),
+                user.getAccountDTO().getAccountBalance()
+        );
+
+        return emailService.sendEmailAlert(
+                EmailDetails.builder()
+                        .recipient(user.getPrimaryEmail())
+                        .subject("Amount Debited from Your Account")
+                        .messageBody(msg)
+                        .build()
+        );
+    }
+
 }

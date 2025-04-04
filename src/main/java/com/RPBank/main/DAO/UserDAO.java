@@ -13,16 +13,16 @@ public interface UserDAO extends JpaRepository<User,Long> {
 
     Boolean existsByPrimaryEmail(String email);
 
-    Boolean existsByAccountInfo_AccountNumber(String accountNumber);
+    Boolean existsByAccountDTO_AccountNumber(String accountNumber);
 
     Boolean existsByCustomerId(long customerId);
 
-    Boolean existsByAccountInfo_AccountName(String name);
+    Boolean existsByAccountDTO_AccountName(String name);
 
 
-    List<User> findAllByAccountInfo_AccountName(String name);
+    List<User> findAllByAccountDTO_AccountName(String name);
 
-    User findByAccountInfo_AccountNumber(String accountNumber);
+    User findByAccountDTO_AccountNumber(String accountNumber);
 
 
 }

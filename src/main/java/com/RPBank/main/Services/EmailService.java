@@ -40,7 +40,7 @@ public class EmailService implements EmailServicesImpl {
 
             logger.info("Email sent successfully to {}", mail.getRecipient());
 
-            return new ResponseEntity<>("Mail sent Succesfully." ,HttpStatus.OK);
+            return new ResponseEntity<>("Mail sent Successfully." ,HttpStatus.OK);
         }
         catch(MailException e) {
 

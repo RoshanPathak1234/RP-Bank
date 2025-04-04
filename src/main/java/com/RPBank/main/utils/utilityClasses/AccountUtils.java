@@ -29,7 +29,7 @@ public class AccountUtils {
         BankResponse response = BankResponse.builder()
                 .responseStatus(String.valueOf(status.value()))
                 .responseMessage(message)
-                .accountInfo(null)
+                .accountDTO(null)
                 .build();
         return new ResponseEntity<>(response, status);
     }
