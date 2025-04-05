@@ -3,6 +3,7 @@ package com.RPBank.main.Controllers;
 import com.RPBank.main.Beans.Transaction;
 import com.RPBank.main.DTO.BankResponse;
 import com.RPBank.main.DTO.TransactionRequests.CreditDebitRequest;
+import com.RPBank.main.DTO.TransactionRequests.StatementRequest;
 import com.RPBank.main.DTO.TransactionRequests.TransferRequest;
 import com.RPBank.main.Services.BankStatement;
 import com.RPBank.main.Services.TransactionService;
@@ -45,25 +46,21 @@ public class TransactionController {
             }
     )
     public List<Transaction> generateBankStatement(
-            @Parameter(description = "Account number of the customer", required = true)
-            @RequestParam String accountNumber,
-
-            @Parameter(description = "Start date in format YYYY-MM-DD", required = true)
-            @RequestParam String startDate,
-
-            @Parameter(description = "End date in format YYYY-MM-DD", required = true)
-            @RequestParam String endDate
+            @Parameter(description = "Bank statement request object containing account number, start and end date", required = true)
+            @ModelAttribute StatementRequest request
     ) {
         try {
             logger.info("Generating bank statement for Account: {}, Start Date: {}, End Date: {}",
-                    accountNumber, startDate, endDate);
-            return bankStatement.generateStatement(accountNumber, startDate, endDate);
+                    request.getAccountNumber(), request.getStartDate(), request.getEndDate());
+
+            return bankStatement.generateStatement(request);
         } catch (Exception e) {
             logger.error("Error generating statement for Account: {} | Start Date: {} | End Date: {}",
-                    accountNumber, startDate, endDate, e);
+                    request.getAccountNumber(), request.getStartDate(), request.getEndDate(), e);
+            return new ArrayList<>();
         }
-        return new ArrayList<>();
     }
+
 
     @Operation(
             summary = "Credit Amount to Account",
