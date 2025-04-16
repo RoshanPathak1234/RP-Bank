@@ -1,12 +1,12 @@
 package com.RPBank.main.Controllers;
 
-import com.RPBank.main.Beans.Transaction;
+import com.RPBank.main.Models.Transaction;
 import com.RPBank.main.DTO.BankResponse;
 import com.RPBank.main.DTO.TransactionRequests.CreditDebitRequest;
 import com.RPBank.main.DTO.TransactionRequests.StatementRequest;
 import com.RPBank.main.DTO.TransactionRequests.TransferRequest;
-import com.RPBank.main.Services.BankStatement;
-import com.RPBank.main.Services.TransactionService;
+import com.RPBank.main.Services.Impl.BankStatement;
+import com.RPBank.main.Services.Impl.TransactionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

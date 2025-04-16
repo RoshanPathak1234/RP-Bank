@@ -1,27 +1,26 @@
-package com.RPBank.main.Services;
+package com.RPBank.main.Services.Impl;
 
 import com.RPBank.main.Authenticator.ValidateAccountDetails;
-import com.RPBank.main.Beans.Transaction;
-import com.RPBank.main.Beans.User;
+import com.RPBank.main.Models.Transaction;
+import com.RPBank.main.Models.User;
 import com.RPBank.main.DAO.TransactionDAO;
 import com.RPBank.main.DAO.UserDAO;
 import com.RPBank.main.DTO.*;
 import com.RPBank.main.DTO.TransactionRequests.TransferRequest;
 import com.RPBank.main.DTO.TransactionRequests.CreditDebitRequest;
-import com.RPBank.main.Services.interfaces.TransactionServicesImpl;
+import com.RPBank.main.Services.interfaces.TransactionServices;
 import com.RPBank.main.utils.enums.TransactionStatus;
 import com.RPBank.main.utils.enums.TransactionType;
 import com.RPBank.main.utils.utilityClasses.AccountUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 
 @Service
-public class TransactionService implements TransactionServicesImpl {
+public class TransactionService implements TransactionServices {
 
     @Autowired
     UserDAO userDAO;

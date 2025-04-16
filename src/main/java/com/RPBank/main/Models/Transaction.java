@@ -1,4 +1,4 @@
-package com.RPBank.main.Beans;
+package com.RPBank.main.Models;
 
 import com.RPBank.main.utils.enums.TransactionStatus;
 import com.RPBank.main.utils.enums.TransactionType;

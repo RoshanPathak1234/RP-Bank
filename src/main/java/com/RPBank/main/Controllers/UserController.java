@@ -3,8 +3,8 @@ package com.RPBank.main.Controllers;
 import com.RPBank.main.DTO.BankResponse;
 import com.RPBank.main.DTO.EnquiryRequest;
 import com.RPBank.main.DTO.UserInfo;
-import com.RPBank.main.Services.EnquiryService;
-import com.RPBank.main.Services.NewAccountService;
+import com.RPBank.main.Services.Impl.EnquiryService;
+import com.RPBank.main.Services.Impl.NewAccountService;
 import com.RPBank.main.utils.enums.AccountType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -15,7 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("api/user")
+@RequestMapping("user/accounts")
 @Tag(name="user account management api")
 public class UserController {
 

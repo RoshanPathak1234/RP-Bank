@@ -1,8 +1,8 @@
-package com.RPBank.main.Services;
+package com.RPBank.main.Services.Impl;
 
 import com.RPBank.main.Authenticator.ValidateAccountDetails;
-import com.RPBank.main.Beans.Transaction;
-import com.RPBank.main.Beans.User;
+import com.RPBank.main.Models.Transaction;
+import com.RPBank.main.Models.User;
 import com.RPBank.main.DAO.TransactionDAO;
 import com.RPBank.main.DAO.UserDAO;
 import com.RPBank.main.DTO.EmailDetails;

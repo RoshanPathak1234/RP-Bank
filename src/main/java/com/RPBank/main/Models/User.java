@@ -1,18 +1,25 @@
-package com.RPBank.main.Beans;
+package com.RPBank.main.Models;
 
 import com.RPBank.main.DTO.AccountDTO;
+import com.RPBank.main.DTO.webDTO.LoginCredentials;
 import com.RPBank.main.utils.enums.AccountStatus;
 import com.RPBank.main.utils.enums.Gender;
 import com.RPBank.main.utils.enums.Occupations;
 import com.RPBank.main.DTO.Address;
+import com.RPBank.main.utils.enums.Role;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -21,10 +28,10 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "users")
 @Schema(name = "User", description = "Represents a bank user with personal and account details.")
-public class User {
+public class User implements UserDetails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Schema(description = "Unique customer ID", example = "1001")
     private long customerId;
 
@@ -48,6 +55,14 @@ public class User {
     @Schema(description = "User's date of birth", example = "1990-05-15")
     @Column(nullable = false)
     private LocalDate dateOfBirth;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    @Schema(description = "Role of user", example = "CUSTOMER")
+    private Role role;
+
+    @Embedded
+    private LoginCredentials loginCredentials;
 
     @Embedded
     @Schema(description = "User's current address")
@@ -123,4 +138,18 @@ public class User {
                 "\n}";
     }
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(role.name()));
+    }
+
+    @Override
+    public String getPassword() {
+        return loginCredentials.getPassword();
+    }
+
+    @Override
+    public String getUsername() {
+        return loginCredentials.getUserName();
+    }
 }

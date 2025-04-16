@@ -5,7 +5,7 @@ import com.RPBank.main.DTO.UserInfo;
 import com.RPBank.main.utils.enums.AccountType;
 import org.springframework.http.ResponseEntity;
 
-public interface AccountServicesImpl {
+public interface AccountServices {
     ResponseEntity<BankResponse> createAccount(UserInfo userInfo , AccountType accountType);
 
 }

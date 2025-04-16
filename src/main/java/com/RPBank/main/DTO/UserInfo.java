@@ -1,9 +1,13 @@
 package com.RPBank.main.DTO;
 
+import com.RPBank.main.DTO.webDTO.LoginCredentials;
 import com.RPBank.main.utils.enums.Gender;
 import com.RPBank.main.utils.enums.Occupations;
+import com.RPBank.main.utils.enums.Role;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Column;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -59,4 +63,12 @@ public class UserInfo {
     @Schema(description = "User's occupation", example = "ENGINEER")
     @Column(nullable = false)
     private Occupations occupation;
+
+    @Enumerated(EnumType.STRING)
+    @Schema(description = "User's Role", example = "CUSTOMER")
+    @Column(nullable = false)
+    private Role role;
+
+    @Column(nullable = false)
+    private LoginCredentials loginCredentials;
 }

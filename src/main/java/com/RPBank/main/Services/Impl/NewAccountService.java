@@ -1,10 +1,11 @@
-package com.RPBank.main.Services;
+package com.RPBank.main.Services.Impl;
 
 import com.RPBank.main.Authenticator.UserValidation;
-import com.RPBank.main.Beans.User;
+import com.RPBank.main.DTO.webDTO.LoginCredentials;
+import com.RPBank.main.Models.User;
 import com.RPBank.main.DAO.UserDAO;
 import com.RPBank.main.DTO.*;
-import com.RPBank.main.Services.interfaces.AccountServicesImpl;
+import com.RPBank.main.Services.interfaces.AccountServices;
 import com.RPBank.main.utils.enums.AccountType;
 import com.RPBank.main.DTO.AccountDTO;
 import com.RPBank.main.utils.enums.AccountStatus;
@@ -12,19 +13,23 @@ import com.RPBank.main.utils.utilityClasses.AccountUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 
 
 @Service
-public class NewAccountService implements AccountServicesImpl {
+public class NewAccountService implements AccountServices {
 
     @Autowired
     private UserDAO userDAO;
 
     @Autowired
     private EmailService emailService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public ResponseEntity<BankResponse> createAccount(UserInfo userInfo , AccountType accountType) {
@@ -41,6 +46,10 @@ public class NewAccountService implements AccountServicesImpl {
             newAccountDetails = generateNewAccountDetails(userInfo , accountType);
         }
 
+        LoginCredentials credentials = LoginCredentials.builder()
+                .userName(userInfo.getLoginCredentials().getUserName())
+                .password(passwordEncoder.encode(userInfo.getLoginCredentials().getPassword()))
+                .build();
 
         User newUser = User.builder()
                 .firstName(userInfo.getFirstName())
@@ -56,6 +65,8 @@ public class NewAccountService implements AccountServicesImpl {
                 .permanentAddress(userInfo.getPermanentAddress())
                 .accountDTO(newAccountDetails)
                 .status(AccountStatus.ACTIVE)
+                .loginCredentials(credentials)
+                .role(userInfo.getRole())
                 .build();
 
         User savedUser = userDAO.save(newUser);

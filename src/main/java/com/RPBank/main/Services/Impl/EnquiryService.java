@@ -1,10 +1,10 @@
-package com.RPBank.main.Services;
+package com.RPBank.main.Services.Impl;
 
-import com.RPBank.main.Beans.User;
+import com.RPBank.main.Models.User;
 import com.RPBank.main.DAO.UserDAO;
 import com.RPBank.main.DTO.BankResponse;
 import com.RPBank.main.DTO.EnquiryRequest;
-import com.RPBank.main.Services.interfaces.EnquiryServicesImpl;
+import com.RPBank.main.Services.interfaces.EnquiryServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +14,7 @@ import static com.RPBank.main.utils.utilityClasses.AccountUtils.buildResponseErr
 
 
 @Service
-public class EnquiryService implements EnquiryServicesImpl {
+public class EnquiryService implements EnquiryServices {
 
     @Autowired
     private UserDAO userDAO;

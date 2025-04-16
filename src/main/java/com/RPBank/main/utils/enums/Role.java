@@ -1,9 +1,8 @@
 package com.RPBank.main.utils.enums;
 
-public enum Gender {
-    MALE,
-    FEMALE,
-    OTHER;
+public enum Role {
+    CUSTOMER,
+    ADMIN;
 
     @Override
     public String toString() {

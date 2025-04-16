@@ -4,9 +4,7 @@ import com.RPBank.main.DTO.BankResponse;
 import com.RPBank.main.DTO.EnquiryRequest;
 import org.springframework.http.ResponseEntity;
 
-import java.util.List;
-
-public interface EnquiryServicesImpl {
+public interface EnquiryServices {
 
     ResponseEntity<BankResponse> accountDetailsEnquiry(EnquiryRequest request);
 }

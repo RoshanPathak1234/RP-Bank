@@ -1,6 +1,6 @@
 package com.RPBank.main.Authenticator;
 
-import com.RPBank.main.Beans.User;
+import com.RPBank.main.Models.User;
 import com.RPBank.main.DAO.UserDAO;
 import com.RPBank.main.DTO.ValidationResponse;
 import com.RPBank.main.utils.utilityClasses.AccountUtils;

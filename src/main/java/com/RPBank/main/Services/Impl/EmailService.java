@@ -1,7 +1,7 @@
-package com.RPBank.main.Services;
+package com.RPBank.main.Services.Impl;
 
 import com.RPBank.main.DTO.EmailDetails;
-import com.RPBank.main.Services.interfaces.EmailServicesImpl;
+import com.RPBank.main.Services.interfaces.EmailServices;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +21,7 @@ import java.io.File;
 
 @Service
 @Slf4j
-public class EmailService implements EmailServicesImpl {
+public class EmailService implements EmailServices {
 
 
     @Autowired
