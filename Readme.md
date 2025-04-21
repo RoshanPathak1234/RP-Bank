@@ -1,3 +1,4 @@
+
 # 🏦 RP Bank – API Documentation
 
 Welcome to the API documentation for **RP Bank**. This documentation provides a comprehensive Swagger UI interface to explore and test all available backend endpoints developed for RP Bank's digital banking system.
@@ -8,29 +9,31 @@ Welcome to the API documentation for **RP Bank**. This documentation provides a 
 
 Access the live API documentation via Swagger UI at:
 
-👉 [http://localhost:8080/swagger-ui/index.html#/](http://localhost:8080/swagger-ui/index.html#/)
+👉 [https://rpbank.onrender.com/swagger-ui/index.html#/](https://rpbank.onrender.com/swagger-ui/index.html#/)
 
 ---
 
-## 🛠️ How to Run the Project
+## 🛠️ How to Run the Project (Locally for Development)
 
 1. Clone the repository and navigate to the project directory.
 2. Run the backend application using your preferred IDE or by executing:
+
    ```bash
    mvn spring-boot:run
    ```
-3. Ensure the backend is running on **port 8080**.
-4. Open your browser and visit:
-   [http://localhost:8080/swagger-ui/index.html#/](http://localhost:8080/swagger-ui/index.html#/)
+
+3. By default, the backend runs on **port 8080**.
+
+> ⚠️ **Note**: For live access and testing, use the deployed server at [https://rpbank.onrender.com](https://rpbank.onrender.com)
 
 ---
 
 ## 🔐 Authentication & Authorization
 
 - 🔒 Basic Authentication with role-based access control:
-    - `CUSTOMER`: Regular banking user
-    - `EMPLOYEE`: Bank staff
-    - `ADMIN`: Full administrative privileges
+  - `CUSTOMER`: Regular banking user
+  - `EMPLOYEE`: Bank staff
+  - `ADMIN`: Full administrative privileges
 - 🚫 Unauthorized and unauthenticated requests are restricted and return appropriate HTTP status codes.
 
 ---
@@ -48,34 +51,34 @@ Access the live API documentation via Swagger UI at:
 - Transfer funds between accounts (intra-bank)
 - View full transaction history
 - Filter transactions using:
-    - ✅ Date range
-    - ✅ Transaction type (DEBIT, CREDIT, TRANSFER)
-    - ✅ Status (SUCCESS, FAILED, PENDING)
+  - ✅ Date range
+  - ✅ Transaction type (DEBIT, CREDIT, TRANSFER)
+  - ✅ Status (SUCCESS, FAILED, PENDING)
 
 ### 📄 Bank Statement
 - Generate professional PDF statements
 - Supports dynamic date ranges (e.g., past month, quarter)
 - PDF includes:
-    - Bank and customer info
-    - Complete transaction summary
+  - Bank and customer info
+  - Complete transaction summary
 - Option to email the statement to the customer’s registered email
 
 ### 📤 Email Notifications
 - Send automated email alerts for:
-    - New account creation
-    - Deposits/withdrawals
-    - Fund transfers
+  - New account creation
+  - Deposits/withdrawals
+  - Fund transfers
 - Email professionally formatted PDF bank statements
 - Secure and formal email content
 
 ### 🔍 Search & Filters
 - Search user by:
-    - Account number
-    - Registered email
+  - Account number
+  - Registered email
 - Transaction filtering with multiple criteria:
-    - Date
-    - Amount threshold
-    - Transaction status/type
+  - Date
+  - Amount threshold
+  - Transaction status/type
 
 ---
 
@@ -84,11 +87,13 @@ Access the live API documentation via Swagger UI at:
 - **Java 17** / **Spring Boot 3**
 - **Spring Security** for authentication and RBAC
 - **Spring Data JPA** for ORM
+- **PostgreSQL** for DataBase
 - **Swagger UI / OpenAPI 3** for API documentation
 - **Maven** as the build tool
 - **iText 7** for PDF generation
 - **JavaMailSender (Spring Mail)** for email functionality
 - **Lombok** to reduce boilerplate code
+- **Docker** for Deployment
 
 ---
 
@@ -106,5 +111,8 @@ Access the live API documentation via Swagger UI at:
 
 ---
 
-> 💡 Feel free to explore and test endpoints through Swagger UI. If you encounter issues or have suggestions, contact the RP Bank backend development team for assistance.
+> 💡 Feel free to explore and test endpoints through the live Swagger UI. If you encounter issues or have suggestions, contact the RP Bank backend development team for assistance.
 
+---
+
+Would you like this saved as a downloadable `README.md` file now?

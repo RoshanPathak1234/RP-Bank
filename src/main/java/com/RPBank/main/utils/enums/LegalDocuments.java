@@ -15,6 +15,7 @@ public class LegalDocuments {
 
     // Address Proofs
     public static enum AddressProof {
+        AADHAAR_CARD,
         BANK_STATEMENT,
         UTILITY_BILL,
         RENT_AGREEMENT,
