@@ -114,5 +114,3 @@ Access the live API documentation via Swagger UI at:
 > 💡 Feel free to explore and test endpoints through the live Swagger UI. If you encounter issues or have suggestions, contact the RP Bank backend development team for assistance.
 
 ---
-
-Would you like this saved as a downloadable `README.md` file now?
